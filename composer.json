@@ -1,0 +1,26 @@
+{
+    "name": "janpapenbrock/magento-statsd",
+    "type": "magento-module",
+    "license": "MIT",
+    "description": "Magento statsd integration.",
+    "homepage": "https://github.com/janpapenbrock/magento-statsd",
+    "authors": [
+        {
+            "name": "Jan Papenbrock",
+            "email": "jan@solvium.de",
+            "homepage": "http://janpapenbrock.de",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "magento-hackathon/magento-composer-installer": "*",
+        "liuggio/statsd-php-client": "1.0.11"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url":  "https://github.com/liuggio/statsd-php-client"
+        }
+    ]
+}

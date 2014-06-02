@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <JanPapenbrock_Statsd>
+            <active>true</active>
+            <codePool>community</codePool>
+        </JanPapenbrock_Statsd>
+    </modules>
+</config>
