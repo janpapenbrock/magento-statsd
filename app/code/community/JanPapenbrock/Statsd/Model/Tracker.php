@@ -117,11 +117,11 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      *
      * <config>
      *   <global>
-     *     <magento_statsd>
+     *     <statsd>
      *       <host>123.123.123.123</host>
      *       <port>8125</port>
      *       <protocol>udp</protocol>
-     *     </magento_statsd>
+     *     </statsd>
      *   </global>
      * </config>
      */
