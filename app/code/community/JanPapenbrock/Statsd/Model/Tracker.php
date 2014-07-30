@@ -136,13 +136,25 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         );
 
         foreach ($configs as $configKey => $defaultValue) {
-            if ($config) {
-                $value = (string) $config->descend($configKey) ?: $defaultValue;
-            } else {
-                $value = $defaultValue;
-            }
-            $this->setDataUsingMethod($configKey, $value);
+            $this->setDataUsingMethod($configKey, $this->_getConfigValue($config, $configKey, $defaultValue));
         }
+    }
+
+    /**
+     * @param Mage_Core_Model_Config|null $config  Configuration node.
+     * @param string                      $key     Config key to get value for.
+     * @param mixed                       $default Default value for this key.
+     *
+     * @return mixed
+     */
+    protected function _getConfigValue($config, $key, $default)
+    {
+        if ($config) {
+            $result = (string) $config->descend($key) ?: $default;
+        } else {
+            $result = $default;
+        }
+        return $result;
     }
 
 }
