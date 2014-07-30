@@ -12,6 +12,12 @@
             "role": "Developer"
         }
     ],
+    "extra": {
+        "map": [
+            ["app/code/community/JanPapenbrock/Statsd", "app/code/community/JanPapenbrock/Statsd"],
+            ["app/etc/JanPapenbrock_Statsd.xml", "app/etc/JanPapenbrock_Statsd.xml"]
+        ]
+    },
     "require": {
         "php": ">=5.3.0",
         "magento-hackathon/magento-composer-installer": "*",
