@@ -15,7 +15,7 @@
     "extra": {
         "map": [
             ["app/code/community/JanPapenbrock/Statsd", "app/code/community/JanPapenbrock/Statsd"],
-            ["app/etc/JanPapenbrock_Statsd.xml", "app/etc/JanPapenbrock_Statsd.xml"]
+            ["app/etc/modules/JanPapenbrock_Statsd.xml", "app/etc/modules/JanPapenbrock_Statsd.xml"]
         ]
     },
     "require": {
