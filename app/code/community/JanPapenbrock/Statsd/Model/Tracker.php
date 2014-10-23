@@ -34,8 +34,8 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
     /** @var StatsdDataFactory $_factory */
     protected $_factory;
 
-    /** @var array $_data */
-    protected $_data = array();
+    /** @var array $_dataItems */
+    protected $_dataItems = array();
 
     /**
      * Construct this tracker.
@@ -66,9 +66,9 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         if (!$this->getActive()) {
             return;
         }
-        if (count($this->_data)) {
-            $this->_client->send($this->_data);
-            $this->_data = array();
+        if (count($this->_dataItems)) {
+            $this->_client->send($this->_dataItems);
+            $this->_dataItems = array();
         }
     }
 
@@ -85,7 +85,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         if (!$this->getActive()) {
             return $this;
         }
-        $this->_data[] = $this->_getFactory()->timing($this->_prepareKey($key), $time);
+        $this->_dataItems[] = $this->_getFactory()->timing($this->_prepareKey($key), $time);
     }
 
     /**
@@ -101,7 +101,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         if (!$this->getActive()) {
             return $this;
         }
-        $this->_data[] = $this->_getFactory()->gauge($this->_prepareKey($key), $value);
+        $this->_dataItems[] = $this->_getFactory()->gauge($this->_prepareKey($key), $value);
     }
 
     /**
@@ -118,7 +118,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
             return $this;
         }
 
-        $this->_data[] = $this->_getFactory()->set($this->_prepareKey($key), $value);
+        $this->_dataItems[] = $this->_getFactory()->set($this->_prepareKey($key), $value);
 
         return $this;
     }
@@ -136,7 +136,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
             return $this;
         }
 
-        $this->_data[] = $this->_getFactory()->increment($this->_prepareKey($key));
+        $this->_dataItems[] = $this->_getFactory()->increment($this->_prepareKey($key));
 
         return $this;
     }
@@ -155,7 +155,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         }
 
         $key = $this->_prepareKey($key);
-        $this->_data[] = $this->_getFactory()->decrement($key);
+        $this->_dataItems[] = $this->_getFactory()->decrement($key);
 
         return $this;
     }
