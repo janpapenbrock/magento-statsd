@@ -48,9 +48,11 @@ Configure
   <global>
     ...
     <statsd>
+      <active>1</active>
       <host>123.123.123.123</host>
       <port>8125</port>
       <protocol>udp</protocol>
+      <prefix>production.web1.magento</prefix>
     </statsd>
   </global>
   ...

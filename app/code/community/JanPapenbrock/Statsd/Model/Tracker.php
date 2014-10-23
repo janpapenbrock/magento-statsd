@@ -15,6 +15,8 @@ use Liuggio\StatsdClient\StatsdClient,
  * @method $this setProtocol(string)
  * @method string getPrefix()
  * @method $this setPrefix(string)
+ * @method bool getActive()
+ * @method $this setActive(bool)
  */
 class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
 {
@@ -61,6 +63,9 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      */
     public function send()
     {
+        if (!$this->getActive()) {
+            return;
+        }
         if (count($this->_data)) {
             $this->_client->send($this->_data);
             $this->_data = array();
@@ -69,26 +74,41 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
 
     public function timing($key, $time)
     {
+        if (!$this->getActive()) {
+            return $this;
+        }
         $this->_data[] = $this->_getFactory()->timing($this->_prepareKey($key), $time);
     }
 
     public function gauge($key, $value)
     {
+        if (!$this->getActive()) {
+            return $this;
+        }
         $this->_data[] = $this->_getFactory()->gauge($this->_prepareKey($key), $value);
     }
 
     public function set($key, $value)
     {
+        if (!$this->getActive()) {
+            return $this;
+        }
         $this->_data[] = $this->_getFactory()->set($this->_prepareKey($key), $value);
     }
 
     public function increment($key)
     {
+        if (!$this->getActive()) {
+            return $this;
+        }
         $this->_data[] = $this->_getFactory()->increment($this->_prepareKey($key));
     }
 
     public function decrement($key)
     {
+        if (!$this->getActive()) {
+            return $this;
+        }
         $key = $this->_prepareKey($key);
         $this->_data[] = $this->_getFactory()->decrement($key);
     }
@@ -129,6 +149,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      * <config>
      *   <global>
      *     <statsd>
+     *       <active>1</active>
      *       <host>123.123.123.123</host>
      *       <port>8125</port>
      *       <protocol>udp</protocol>
@@ -142,6 +163,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         $config = Mage::getConfig()->getNode('global/statsd');
 
         $configs = array(
+            'active' => 0,
             'host' => static::DEFAULT_HOST,
             'port' => static::DEFAULT_PORT,
             'protocol' => static::DEFAULT_PROTOCOL,
