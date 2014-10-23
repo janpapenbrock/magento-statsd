@@ -72,6 +72,14 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         }
     }
 
+    /**
+     * Track timing.
+     *
+     * @param string $key
+     * @param int    $time
+     *
+     * @return $this
+     */
     public function timing($key, $time)
     {
         if (!$this->getActive()) {
@@ -80,6 +88,14 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         $this->_data[] = $this->_getFactory()->timing($this->_prepareKey($key), $time);
     }
 
+    /**
+     * Set gauge value.
+     *
+     * @param string $key
+     * @param int    $value
+     *
+     * @return $this
+     */
     public function gauge($key, $value)
     {
         if (!$this->getActive()) {
@@ -88,29 +104,60 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         $this->_data[] = $this->_getFactory()->gauge($this->_prepareKey($key), $value);
     }
 
+    /**
+     * Set value.
+     *
+     * @param string $key
+     * @param int    $value
+     *
+     * @return $this
+     */
     public function set($key, $value)
     {
         if (!$this->getActive()) {
             return $this;
         }
+
         $this->_data[] = $this->_getFactory()->set($this->_prepareKey($key), $value);
+
+        return $this;
     }
 
+    /**
+     * Increment counter for key.
+     *
+     * @param string $key
+     *
+     * @return $this
+     */
     public function increment($key)
     {
         if (!$this->getActive()) {
             return $this;
         }
+
         $this->_data[] = $this->_getFactory()->increment($this->_prepareKey($key));
+
+        return $this;
     }
 
+    /**
+     * Decrement counter for key.
+     *
+     * @param string $key
+     *
+     * @return $this
+     */
     public function decrement($key)
     {
         if (!$this->getActive()) {
             return $this;
         }
+
         $key = $this->_prepareKey($key);
         $this->_data[] = $this->_getFactory()->decrement($key);
+
+        return $this;
     }
 
     /**
