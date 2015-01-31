@@ -45,7 +45,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
             $this->getConfiguration()->getProtocol()
         );
         $this->_client  = new StatsdClient($this->_sender);
-        $this->_factory = new StatsdDataFactory('\Liuggio\StatsdClient\Entity\StatsdData');
+
 
         return $this;
     }
@@ -169,6 +169,9 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      */
     protected function _getFactory()
     {
+        if (is_null($this->_factory)) {
+            $this->_factory = new StatsdDataFactory('\Liuggio\StatsdClient\Entity\StatsdData');
+        }
         return $this->_factory;
     }
 
