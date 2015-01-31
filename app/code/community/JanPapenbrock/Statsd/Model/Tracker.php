@@ -61,7 +61,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         if (!$this->isActive()) {
             return $this;
         }
-        $this->_dataItems[] = $this->_getFactory()->timing($this->_prepareKey($key), $time);
+        $this->_dataItems[] = $this->_getFactory()->timing($this->getPrefixedKey($key), $time);
     }
 
     /**
@@ -77,7 +77,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         if (!$this->isActive()) {
             return $this;
         }
-        $this->_dataItems[] = $this->_getFactory()->gauge($this->_prepareKey($key), $value);
+        $this->_dataItems[] = $this->_getFactory()->gauge($this->getPrefixedKey($key), $value);
     }
 
     /**
@@ -94,7 +94,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
             return $this;
         }
 
-        $this->_dataItems[] = $this->_getFactory()->set($this->_prepareKey($key), $value);
+        $this->_dataItems[] = $this->_getFactory()->set($this->getPrefixedKey($key), $value);
 
         return $this;
     }
@@ -112,7 +112,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
             return $this;
         }
 
-        $this->_dataItems[] = $this->_getFactory()->increment($this->_prepareKey($key));
+        $this->_dataItems[] = $this->_getFactory()->increment($this->getPrefixedKey($key));
 
         return $this;
     }
@@ -130,7 +130,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
             return $this;
         }
 
-        $key = $this->_prepareKey($key);
+        $key = $this->getPrefixedKey($key);
         $this->_dataItems[] = $this->_getFactory()->decrement($key);
 
         return $this;
@@ -186,9 +186,9 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      *
      * @return string
      */
-    protected function _prepareKey($key)
+    protected function getPrefixedKey($key)
     {
-        $result = $this->getPrefix().$key;
+        $result = $this->getFullPrefix().$key;
         return $result;
     }
 
@@ -197,7 +197,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      *
      * @return string
      */
-    protected function getPrefix()
+    protected function getFullPrefix()
     {
         $result = '';
         $prefix = $this->getConfiguration()->getPrefix();
@@ -229,7 +229,6 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         if (is_null($this->_configuration)) {
             $this->_configuration = Mage::getModel('statsd/configuration');
         }
-
         return $this->_configuration;
     }
 
