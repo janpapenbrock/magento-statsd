@@ -61,7 +61,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         if (!$this->isActive()) {
             return $this;
         }
-        $this->_dataItems[] = $this->_getFactory()->timing($this->getPrefixedKey($key), $time);
+        $this->_dataItems[] = $this->getFactory()->timing($this->getPrefixedKey($key), $time);
     }
 
     /**
@@ -77,7 +77,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         if (!$this->isActive()) {
             return $this;
         }
-        $this->_dataItems[] = $this->_getFactory()->gauge($this->getPrefixedKey($key), $value);
+        $this->_dataItems[] = $this->getFactory()->gauge($this->getPrefixedKey($key), $value);
     }
 
     /**
@@ -94,7 +94,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
             return $this;
         }
 
-        $this->_dataItems[] = $this->_getFactory()->set($this->getPrefixedKey($key), $value);
+        $this->_dataItems[] = $this->getFactory()->set($this->getPrefixedKey($key), $value);
 
         return $this;
     }
@@ -112,7 +112,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
             return $this;
         }
 
-        $this->_dataItems[] = $this->_getFactory()->increment($this->getPrefixedKey($key));
+        $this->_dataItems[] = $this->getFactory()->increment($this->getPrefixedKey($key));
 
         return $this;
     }
@@ -131,7 +131,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
         }
 
         $key = $this->getPrefixedKey($key);
-        $this->_dataItems[] = $this->_getFactory()->decrement($key);
+        $this->_dataItems[] = $this->getFactory()->decrement($key);
 
         return $this;
     }
@@ -141,7 +141,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      *
      * @return StatsdDataFactory
      */
-    protected function _getFactory()
+    protected function getFactory()
     {
         if (is_null($this->_factory)) {
             $this->_factory = new StatsdDataFactory('\Liuggio\StatsdClient\Entity\StatsdData');
