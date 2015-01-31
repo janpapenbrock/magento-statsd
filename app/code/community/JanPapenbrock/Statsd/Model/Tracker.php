@@ -6,24 +6,11 @@ use Liuggio\StatsdClient\StatsdClient,
 
 /**
  * Class JanPapenbrock_Statsd_Model_Tracker
- *
- * @method int getPort()
- * @method $this setPort(int)
- * @method string getHost()
- * @method $this setHost(string)
- * @method string getProtocol()
- * @method $this setProtocol(string)
- * @method string getPrefix()
- * @method $this setPrefix(string)
- * @method bool getActive()
- * @method $this setActive(bool)
  */
 class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
 {
-    const DEFAULT_HOST = '127.0.0.1';
-    const DEFAULT_PORT = 8125;
-    const DEFAULT_PROTOCOL = 'udp';
-    const DEFAULT_PREFIX = 'magento';
+    /** @var  JanPapenbrock_Statsd_Model_Configuration */
+    protected $_configuration;
 
     /** @var SocketSender $_client  */
     protected $_sender;
@@ -42,10 +29,25 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      */
     public function __construct()
     {
-        $this->_initConfig();
-        $this->_sender  = new SocketSender($this->getHost(), $this->getPort(), $this->getProtocol());
+        $this->initStatsdClient();
+    }
+
+    /**
+     * Initialize statsd client library.
+     *
+     * @return $this
+     */
+    protected function initStatsdClient()
+    {
+        $this->_sender  = new SocketSender(
+            $this->getConfiguration()->getHost(),
+            $this->getConfiguration()->getPort(),
+            $this->getConfiguration()->getProtocol()
+        );
         $this->_client  = new StatsdClient($this->_sender);
         $this->_factory = new StatsdDataFactory('\Liuggio\StatsdClient\Entity\StatsdData');
+
+        return $this;
     }
 
     /**
@@ -63,7 +65,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      */
     public function send()
     {
-        if (!$this->getActive()) {
+        if (!$this->isActive()) {
             return;
         }
         if (count($this->_dataItems)) {
@@ -82,7 +84,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      */
     public function timing($key, $time)
     {
-        if (!$this->getActive()) {
+        if (!$this->isActive()) {
             return $this;
         }
         $this->_dataItems[] = $this->_getFactory()->timing($this->_prepareKey($key), $time);
@@ -98,7 +100,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      */
     public function gauge($key, $value)
     {
-        if (!$this->getActive()) {
+        if (!$this->isActive()) {
             return $this;
         }
         $this->_dataItems[] = $this->_getFactory()->gauge($this->_prepareKey($key), $value);
@@ -114,7 +116,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      */
     public function set($key, $value)
     {
-        if (!$this->getActive()) {
+        if (!$this->isActive()) {
             return $this;
         }
 
@@ -132,7 +134,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      */
     public function increment($key)
     {
-        if (!$this->getActive()) {
+        if (!$this->isActive()) {
             return $this;
         }
 
@@ -150,7 +152,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      */
     public function decrement($key)
     {
-        if (!$this->getActive()) {
+        if (!$this->isActive()) {
             return $this;
         }
 
@@ -179,64 +181,49 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
      */
     protected function _prepareKey($key)
     {
-        $result = $key;
+        $result = $this->getPrefix().$key;
+        return $result;
+    }
 
-        if ($this->getPrefix()) {
-            $result = $this->getPrefix().'.'.$key;
+    /**
+     * Get stats key prefix.
+     *
+     * @return string
+     */
+    protected function getPrefix()
+    {
+        $result = '';
+        $prefix = $this->getConfiguration()->getPrefix();
+        if ($prefix) {
+            $result = $prefix . '.';
         }
 
         return $result;
     }
 
     /**
-     * Read values from global configuration.
+     * Is tracking enabled?
      *
-     * Sample:
-     *
-     * <config>
-     *   <global>
-     *     <statsd>
-     *       <active>1</active>
-     *       <host>123.123.123.123</host>
-     *       <port>8125</port>
-     *       <protocol>udp</protocol>
-     *       <prefix>magento</prefix>
-     *     </statsd>
-     *   </global>
-     * </config>
+     * @return bool
      */
-    protected function _initConfig()
+    protected function isActive()
     {
-        $config = Mage::getConfig()->getNode('global/statsd');
-
-        $configs = array(
-            'active' => 0,
-            'host' => static::DEFAULT_HOST,
-            'port' => static::DEFAULT_PORT,
-            'protocol' => static::DEFAULT_PROTOCOL,
-            'prefix' => static::DEFAULT_PREFIX
-        );
-
-        foreach ($configs as $configKey => $defaultValue) {
-            $this->setDataUsingMethod($configKey, $this->_getConfigValue($config, $configKey, $defaultValue));
-        }
+        $result = $this->getConfiguration()->getActive();
+        return $result;
     }
 
     /**
-     * @param Mage_Core_Model_Config|null $config  Configuration node.
-     * @param string                      $key     Config key to get value for.
-     * @param mixed                       $default Default value for this key.
+     * Get configuration.
      *
-     * @return mixed
+     * @return JanPapenbrock_Statsd_Model_Configuration
      */
-    protected function _getConfigValue($config, $key, $default)
+    protected function getConfiguration()
     {
-        if ($config) {
-            $result = (string) $config->descend($key) ?: $default;
-        } else {
-            $result = $default;
+        if (is_null($this->_configuration)) {
+            $this->_configuration = Mage::getModel('statsd/configuration');
         }
-        return $result;
+
+        return $this->_configuration;
     }
 
 }
