@@ -25,32 +25,6 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
     protected $_dataItems = array();
 
     /**
-     * Construct this tracker.
-     */
-    public function __construct()
-    {
-        $this->initStatsdClient();
-    }
-
-    /**
-     * Initialize statsd client library.
-     *
-     * @return $this
-     */
-    protected function initStatsdClient()
-    {
-        $this->_sender  = new SocketSender(
-            $this->getConfiguration()->getHost(),
-            $this->getConfiguration()->getPort(),
-            $this->getConfiguration()->getProtocol()
-        );
-        $this->_client  = new StatsdClient($this->_sender);
-
-
-        return $this;
-    }
-
-    /**
      * On destruction, any data collected is sent.
      */
     public function __destruct()
@@ -69,7 +43,7 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
             return;
         }
         if (count($this->_dataItems)) {
-            $this->_client->send($this->_dataItems);
+            $this->getClient()->send($this->_dataItems);
             $this->_dataItems = array();
         }
     }
@@ -173,6 +147,36 @@ class JanPapenbrock_Statsd_Model_Tracker extends Mage_Core_Model_Abstract
             $this->_factory = new StatsdDataFactory('\Liuggio\StatsdClient\Entity\StatsdData');
         }
         return $this->_factory;
+    }
+
+    /**
+     * Get statsd client instance.
+     *
+     * @return StatsdClient
+     */
+    protected function getClient()
+    {
+        if (is_null($this->_client)) {
+            $this->_client  = new StatsdClient($this->getSender());
+        }
+        return $this->_client;
+    }
+
+    /**
+     * Get socket sender instance.
+     *
+     * @return SocketSender
+     */
+    protected function getSender()
+    {
+        if (is_null($this->_sender)) {
+            $this->_sender  = new SocketSender(
+                $this->getConfiguration()->getHost(),
+                $this->getConfiguration()->getPort(),
+                $this->getConfiguration()->getProtocol()
+            );
+        }
+        return $this->_sender;
     }
 
     /**
