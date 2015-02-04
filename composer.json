@@ -30,6 +30,6 @@
     ],
     "suggest": {
         "magento-hackathon/magento-composer-installer": "*",
-        "ajbonner/magento-composer-autoload": "For autoloading statsd-php-client library."
+        "firegento/psr0autoloader": "For autoloading statsd-php-client library."
     }
 }
