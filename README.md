@@ -10,7 +10,7 @@ Add this to your composer.json
 
 ```
     "require": {
-        "janpapenbrock/magento-statsd":"dev-master"
+        "janpapenbrock/magento-statsd": "dev-master"
     },
     "repositories": [
         {
@@ -22,11 +22,11 @@ Add this to your composer.json
 
 Some sort of autoload manager is required to load additional libraries, namely [liuggio/statsd-php-client](https://github.com/liuggio/statsd-php-client), to Magento autoloader.
 
-Require e.g. [ajbonner/magento-composer-autoload](https://github.com/ajbonner/magento-composer-autoload) via composer:
+Require e.g. [firegento/psr0autoloader](https://github.com/magento-hackathon/Magento-PSR-0-Autoloader) via composer:
 
 ```
     "require": {
-        "ajbonner/magento-composer-autoload":"*"
+        "firegento/psr0autoloader":"*"
     },
     "repositories": [
         {
@@ -41,20 +41,18 @@ Configure
 ---------
 
 ```
-# app/etc/local.xml
+# app/etc/statsd.xml
 
+<?xml version="1.0"?>
 <config>
-  ...
   <global>
-    ...
     <statsd>
       <active>1</active>
       <host>123.123.123.123</host>
       <port>8125</port>
       <protocol>udp</protocol>
-      <prefix>production.web1.magento</prefix>
+      <prefix>servername.magento.production</prefix>
     </statsd>
   </global>
-  ...
 </config>
 ```
