@@ -35,16 +35,34 @@ class JanPapenbrock_Statsd_Model_Observer_Abstract
     }
 
     /**
+     * Obtain time tracking key for given object.
+     *
+     * @param string|Object $object Object.
+     *
+     * @return string
+     */
+    protected function getTimeTrackingKey($object)
+    {
+        if (is_string($object)) {
+            $result = $object;
+        } else {
+            $result = $this->_getObjectHash($object);
+        }
+
+        return $result;
+    }
+
+    /**
      * Start a time tracker for the given object.
      *
-     * @param Object $object An object.
+     * @param string|Object $object An object.
      *
      * @return void
      */
     protected function _startTrackDuration($object)
     {
-        $hash = $this->_getObjectHash($object);
-        $this->_timings[$hash] = microtime(true);
+        $key = $this->getTimeTrackingKey($object);
+        $this->_timings[$key] = microtime(true);
     }
 
     /**
@@ -56,10 +74,10 @@ class JanPapenbrock_Statsd_Model_Observer_Abstract
      */
     protected function _stopTrackDuration($object)
     {
-        $hash = $this->_getObjectHash($object);
+        $key = $this->getTimeTrackingKey($object);
 
-        if (isset($this->_timings[$hash])) {
-            $duration = microtime(true) - $this->_timings[$hash];
+        if (isset($this->_timings[$key])) {
+            $duration = microtime(true) - $this->_timings[$key];
             $duration = round($duration * 1000);
         } else {
             $duration = 0;
