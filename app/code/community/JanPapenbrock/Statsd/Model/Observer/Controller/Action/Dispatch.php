@@ -19,7 +19,6 @@ class JanPapenbrock_Statsd_Model_Observer_Controller_Action_Dispatch
         $class = $controllerAction->getFullActionName('_');
 
         $tracker = $this->getTracker();
-        $tracker->timing('controllers.controller.' . $this->_eventName, $duration);
         $tracker->timing('controllers.' . $class . '.' . $this->_eventName, $duration);
         $tracker->send();
     }
